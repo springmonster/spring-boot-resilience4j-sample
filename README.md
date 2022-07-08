@@ -16,6 +16,7 @@ Application is running on http://localhost:8082
 
 Use docker-compose to start Grafana and Prometheus servers.
 
+- First generate jar in `/build/libs` folder
 - In the root folder
 
 ```
