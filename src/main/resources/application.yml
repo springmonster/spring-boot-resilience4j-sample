@@ -1,0 +1,203 @@
+server:
+  port: 8082
+
+# chaos相关
+
+#spring:
+#  profiles:
+#    active: chaos-monkey
+#
+#management:
+#  endpoint:
+#    chaosmonkey:
+#      enabled: true
+#    chaosmonkeyjmx:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+
+# chaos相关
+
+#chaos:
+#  monkey:
+#    enabled: true
+#    watcher:
+#      service: true
+#      controller: true
+#      rest-controller: true
+#      repository: true
+#      component: true
+#    assaults:
+#      latency-active: true
+#      latency-range-start: 1000
+#      latency-range-end: 6000
+#      level: 3
+#      exceptions-active: false
+#      exception:
+#        type: com.rsoss.resilience4j.exception.ChaosException
+#        method: <init>
+
+# 断路器默认配置
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      # 健康检查
+      register-health-indicator: true
+      # 配置的滑动窗口的大小
+      sliding-window-size: 10
+      # 配置在 CircuitBreaker 计算错误率或慢速调用率之前所需的最小调用次数（每个滑动窗口周期）。 例如，如果 minimumNumberOfCalls 为 10，则必须记录至少 10 次呼叫，然后才能计算失败率。 如果仅记录了 9 个呼叫，即使所有 9 个呼叫都失败，CircuitBreaker 也不会转换为打开状态。
+      minimum-number-of-calls: 5
+      # 配置断路器处于半开状态时允许的调用数。
+      permittedNumberOfCallsInHalfOpenState: 3
+      # 如果设置为 true，则意味着 CircuitBreaker 将自动从打开状态转换为半打开状态，无需调用即可触发转换。创建一个线程来监视 CircuitBreakers 的所有实例，以便在 wait DurationInOpenState 通过时将它们转换为 HALF _ OPEN。然而，如果设置为 false，那么只有在发出调用时才会发生到 HALF _ OPEN 的转换，甚至在传递了 wait DurationInOpenState 之后也是如此。这里的优点是没有线程监视所有电路断路器的状态。
+      automatic-transition-from-open-to-half-open-enabled: true
+      # 断路器在从开启状态过渡到半开启状态之前应该等待的时间。
+      waitDurationInOpenState: 5s
+      # 以百分比配置故障率阈值。
+      #当故障率等于或大于阈值时，CircuitBreaker 转换为打开并开始短路呼叫。
+      failure-rate-threshold: 50
+      # todo
+      eventConsumerBufferSize: 10
+      # 记录为故障并因此增加故障率的异常列表。
+      #
+      # 任何匹配或继承自列表之一的异常都将被视为失败，除非通过 ignoreException 显式忽略。
+      #
+      # 如果指定了异常列表，则所有其他异常都视为成功，除非 IgnoreException 显式忽略它们。
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.util.concurrent.TimeoutException
+        - java.io.IOException
+        - com.example.resilience4j.exception.ChaosException
+      #被忽略的异常列表，这些异常既不算失败，也不算成功。
+      #
+      #从列表中匹配或继承的任何异常都不会被视为失败或成功，即使异常是记录异常的一部分。
+      ignoreExceptions:
+        - com.example.resilience4j.exception.BusinessException
+    # 您还可以覆盖默认配置，定义共享配置，并在 Spring Boot 的 application.yml 配置文件中覆盖它们
+    shared:
+      slidingWindowSize: 100
+      permittedNumberOfCallsInHalfOpenState: 30
+      waitDurationInOpenState: 1s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+      ignoreExceptions:
+        - com.example.resilience4j.exception.BusinessException
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 10
+      permittedNumberOfCallsInHalfOpenState: 3
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+
+# 重试
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3
+      # 毫秒为单位
+      waitDuration: 100
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.util.concurrent.TimeoutException
+        - java.io.IOException
+      ignoreExceptions:
+        - com.example.resilience4j.exception.BusinessException
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      baseConfig: default
+
+# 舱壁，使用信号量
+resilience4j.bulkhead:
+  configs:
+    default:
+      maxConcurrentCalls: 100
+  instances:
+    backendA:
+      maxConcurrentCalls: 10
+    backendB:
+      maxWaitDuration: 10ms
+      maxConcurrentCalls: 20
+
+# 舱壁，使用线程池
+resilience4j.thread-pool-bulkhead:
+  configs:
+    default:
+      maxThreadPoolSize: 4
+      coreThreadPoolSize: 2
+      queueCapacity: 2
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      maxThreadPoolSize: 1
+      coreThreadPoolSize: 1
+      queueCapacity: 1
+
+# 速率限制
+resilience4j.ratelimiter:
+  configs:
+    default:
+      registerHealthIndicator: false
+      limitForPeriod: 10
+      limitRefreshPeriod: 1s
+      timeoutDuration: 0
+      eventConsumerBufferSize: 100
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      limitForPeriod: 6
+      limitRefreshPeriod: 500ms
+      timeoutDuration: 3s
+
+# 超时限制
+resilience4j.timelimiter:
+  configs:
+    default:
+      cancelRunningFuture: false
+      timeoutDuration: 2s
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      baseConfig: default
+
+# actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false
+    circuitbreakers:
+      enabled: true
+    ratelimiters:
+      enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        resilience4j.circuitbreaker.calls: true
+    tags:
+      application: spring-cloud-resilience4j-demo
+
+
+info:
+  name: spring-cloud-resilience4j-demo
+  description: resilience4j demo
+  environment: dev
+  version: 0.0.1
