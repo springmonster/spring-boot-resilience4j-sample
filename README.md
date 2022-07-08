@@ -1,4 +1,4 @@
-# spring-cloud-resilience4j-complex-demo
+# spring-cloud-resilience4j-demo
 
 # Getting Started
 
