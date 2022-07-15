@@ -33,7 +33,7 @@ Check the Prometheus server.
 ## Step 3
 Configure the Grafana.
 
-- Open http://localhost:3000
+- Open http://localhost:3000, user name and password are all `admin`
 - Configure integration with Prometheus
   - Access configuration
   - Add data source

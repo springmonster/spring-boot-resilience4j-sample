@@ -1,7 +1,7 @@
 server:
   port: 8082
 
-# chaos相关
+# chaos related
 
 #spring:
 #  profiles:
@@ -18,9 +18,6 @@ server:
 #      exposure:
 #        include: "*"
 
-# chaos相关
-
-#chaos:
 #  monkey:
 #    enabled: true
 #    watcher:
