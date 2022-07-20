@@ -96,5 +96,7 @@ Configure Splunk server
 ] | timechart max(memoryUsed) as memoryUsed, max(memoryCommitted) as memoryCommitted span=30s
 ```
 
-## TODO
-- Add Resilience4j metrics dashboard
+## Step 4
+- Go to `Analytics`
+- Check `resilience4j` and click labels
+- Save all charts to dashboard
