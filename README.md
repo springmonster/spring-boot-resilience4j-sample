@@ -95,3 +95,6 @@ Configure Splunk server
   | mstats max(_value) as memoryCommitted where index=spring_metrics metric_name="jvm_memory_committed.value" span=30s | eval memoryCommitted=memoryCommitted/(1024*1024)
 ] | timechart max(memoryUsed) as memoryUsed, max(memoryCommitted) as memoryCommitted span=30s
 ```
+
+## TODO
+Add Resilience4j metrics dashboard
