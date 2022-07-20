@@ -1,8 +1,8 @@
 ---
 ansible_connection: local
-ansible_environment: {}
-ansible_post_tasks: []
-ansible_pre_tasks: []
+ansible_environment: { }
+ansible_post_tasks: [ ]
+ansible_pre_tasks: [ ]
 cert_prefix: https
 config:
   baked: splunk-config.yml
@@ -41,7 +41,7 @@ splunk:
   appserver:
     port: 8065
   asan: false
-  auxiliary_cluster_masters: []
+  auxiliary_cluster_masters: [ ]
   build_url_bearer_token: null
   cluster_master_url: null
   connection_timeout: 0
@@ -93,7 +93,7 @@ splunk:
   ignore_license: false
   kvstore:
     port: 8191
-  launch: {}
+  launch: { }
   license_download_dest: /tmp/splunk.lic
   license_master_url: ''
   multisite_master_port: 8089
