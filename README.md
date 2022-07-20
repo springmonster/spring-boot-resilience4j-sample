@@ -97,4 +97,4 @@ Configure Splunk server
 ```
 
 ## TODO
-Add Resilience4j metrics dashboard
+- Add Resilience4j metrics dashboard
