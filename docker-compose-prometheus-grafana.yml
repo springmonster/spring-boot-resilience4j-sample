@@ -4,7 +4,7 @@ services:
     image: prom/prometheus
     container_name: prometheus-resilience4j
     volumes:
-      - ./docker/prometheus-desktop.yml:/etc/prometheus/prometheus.yml
+      - ./docker-prometheus-grafana/prometheus-desktop.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
@@ -15,7 +15,7 @@ services:
     image: grafana/grafana
     container_name: grafana-resilience4j
     env_file:
-      - ./docker/grafana.env
+      - docker-prometheus-grafana/grafana.env
     ports:
       - "3000:3000"
     networks:
