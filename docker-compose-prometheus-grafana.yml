@@ -2,7 +2,7 @@ version: '3'
 services:
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: prometheus-resilience4j
     volumes:
       - ./docker/prometheus-desktop.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -13,7 +13,7 @@ services:
       - app
   grafana:
     image: grafana/grafana
-    container_name: grafana
+    container_name: grafana-resilience4j
     env_file:
       - ./docker/grafana.env
     ports:
@@ -21,8 +21,8 @@ services:
     networks:
       - net
   app:
-  # build and start spring application inside a separate container using the same network as prometheus
-    build: .
+    image: spring-resilience4j-demo
+    container_name: spring-resilience4j-demo
     ports:
       - "8082:8082"
     networks:
