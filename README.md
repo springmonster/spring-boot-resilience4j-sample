@@ -19,8 +19,12 @@ Build docker image
 - First generate jar in `/build/libs` folder
 - In the root folder
 
+> --build-arg GIT_COMMIT=XXXXXX, git commit can be used as docker image label
+
 ```
-docker build -t spring-resilience4j-demo .
+docker build -t spring-resilience4j-demo --build-arg GIT_COMMIT=xxxxxx .
+
+# use docker inspect spring-resilience4j-demo to check label
 ```
 
 ## Step 2
@@ -97,6 +101,7 @@ Configure Splunk server
 ```
 
 ## Step 4
+
 - Go to `Analytics`
 - Check `resilience4j` and click labels
 - Save all charts to dashboard
